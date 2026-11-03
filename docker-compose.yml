@@ -1,0 +1,60 @@
+services:
+  teleandes_db:
+    image: mysql:8.0
+    container_name: teleandes_db
+    env_file: .env
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - teleandes_db_data:/var/lib/mysql
+      - ./database:/docker-entrypoint-initdb.d:ro
+    networks:
+      - teleandes_network
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+
+  teleandes_api:
+    build: ./backend
+    container_name: teleandes_api
+    env_file: .env
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    depends_on:
+      teleandes_db:
+        condition: service_healthy
+    networks:
+      - teleandes_network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  teleandes_web:
+    build: ./frontend
+    container_name: teleandes_web
+    ports:
+      - "${WEB_PORT:-8080}:8080"
+    depends_on:
+      teleandes_api:
+        condition: service_healthy
+    networks:
+      - teleandes_network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+networks:
+  teleandes_network:
+    name: teleandes_network
+
+volumes:
+  teleandes_db_data:
+    name: teleandes_db_data
