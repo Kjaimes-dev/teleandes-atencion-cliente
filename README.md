@@ -5,7 +5,7 @@ Solución para TeleAndes, operador de internet y telefonía, que atiende a sus c
 - **API REST** (FastAPI + MySQL): consulta de clientes y registro e historial de gestiones. Es la fuente única que usan los tres canales.
 - **Formulario del agente** (HTML + CSS + JS sin frameworks): consulta un cliente por documento, muestra su ficha y su historial, y registra una gestión.
 - **Diseño del IVR** ([docs/ivr.md](docs/ivr.md)): reglas, diagrama de flujo, pseudocódigo, lectura de cifras y dialplan ilustrativo de Asterisk.
-- **Diseño de Andi** ([docs/andi.md](docs/andi.md)): prompt de sistema, herramientas, casos de conversación y cambios al voicebot.
+- **Diseño de Andi** ([docs/andi.md](docs/andi.md)): prompt de sistema, herramientas, casos de conversación, cambios al voicebot y seguridad y operación.
 
 ## Arquitectura
 
@@ -192,7 +192,7 @@ Con más tiempo, y en este orden aproximado:
 - **Paginación** del historial de gestiones.
 - **Pruebas e2e** del formulario con un navegador automatizado, y pruebas de integración de los repositorios contra MySQL.
 - **Integración real con Asterisk** y prueba del dialplan.
-- **Verificación de identidad fuerte en Andi.** Hoy se compara el número de WhatsApp con el celular registrado, lo que no es autenticación fuerte.
+- **Verificación de identidad fuerte en Andi.** Hoy el sistema compara el número de WhatsApp con el celular registrado, lo que no es autenticación fuerte.
 - **Observabilidad:** logs estructurados con identificador de petición y métricas (latencia, errores por endpoint).
 
 ## Uso de IA
